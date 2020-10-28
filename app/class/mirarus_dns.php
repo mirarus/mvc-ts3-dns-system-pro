@@ -147,6 +147,36 @@ class mirarus_dns
 		return $this->post('zones/'.$identifier.'/dns_records',$data);
 	}
 
+	public function update_a_record($identifier,$dns_record_id,$dnsname,$ip)
+	{
+		$data = [
+			'type' => 'A',
+			"name"=>"".$dnsname."",
+			'content'   =>  $ip,
+			'proxiable' => true,
+			'proxied' => false,
+		];
+		return $this->put('zones/'.$identifier.'/dns_records/'.$dns_record_id,$data);
+	}
+
+	public function update_srv_record($identifier,$dns_record_id,$dnsname,$port,$domain)
+	{
+		$data = [
+			'type' => 'SRV',
+			'data' => array(
+				"name"=>"".$dnsname."",
+				"ttl"=>120,
+				"service"=>"_ts3",
+				"proto"=>"_udp",
+				"weight"=>5,
+				"port"=>intval($port),
+				"priority"=>0,
+				"target"=>"".$dnsname.'.'.$domain.""
+			)
+		];
+		return $this->put('zones/'.$identifier.'/dns_records/'.$dns_record_id,$data);
+	}
+
 	private function delete($endpoint,$data)
 	{
 		return $this->http_request($endpoint,$data,'delete');
